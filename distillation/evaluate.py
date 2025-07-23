@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, f1_score
 
 def evaluate_model(model, dataset, device, batch_size=32, use_student_keys=False):
     """
@@ -41,5 +41,7 @@ def evaluate_model(model, dataset, device, batch_size=32, use_student_keys=False
             all_labels.extend(labels.cpu().numpy())
 
     acc = accuracy_score(all_labels, all_preds)
-    report = classification_report(all_labels, all_preds, digits=4)
-    return acc, report
+    report = classification_report(all_labels, all_preds, digits=4, output_dict=True)
+    f1_micro = f1_score(all_labels, all_preds, average="micro")
+    f1_macro = f1_score(all_labels, all_preds, average="macro")
+    return acc, report, f1_micro, f1_macro
